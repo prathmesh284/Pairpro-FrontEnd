@@ -1,7 +1,8 @@
 //MonitoringContext.js
 
 import { createContext, useContext, useEffect, useState } from "react";
-import { socket } from "../socket"; // Adjust path to your socket setup
+import { socket } from "../socket";
+import { useNavigate } from "react-router-dom";
 
 const MonitoringContext = createContext();
 
@@ -9,6 +10,7 @@ export function MonitoringProvider({ children, userId, roomId }) {
   const [showWarning, setShowWarning] = useState(false);
   const [maliciousDetected, setMaliciousDetected] = useState(false);
   const [tabSwitchCount, setTabSwitchCount] = useState(0);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleVisibilityChange = () => {
@@ -18,11 +20,19 @@ export function MonitoringProvider({ children, userId, roomId }) {
 
         if (updatedCount === 3) {
           setMaliciousDetected(true);
-          socket.emit("last-tab-warning", { userId, roomId }); // 🔔 Peer warning
-          socket.emit("malicious-detected", { userId, roomId }); // 🟥 Full flag
+
+          // Notify peer and server
+          socket.emit("last-tab-warning", { userId, roomId });
+          socket.emit("malicious-detected", { userId, roomId });
+
+          // Leave meeting
+          setTimeout(() => {
+            socket.emit("leave-room", { userId, roomId });
+            navigate("/"); // Redirect user out of meeting
+          }, 3000);
         } else {
           setShowWarning(true);
-          socket.emit("tab-warning", { userId, roomId }); // 🟡 Mild warning to peer
+          socket.emit("tab-warning", { userId, roomId });
         }
       }
     };
@@ -31,7 +41,7 @@ export function MonitoringProvider({ children, userId, roomId }) {
     return () => {
       document.removeEventListener("visibilitychange", handleVisibilityChange);
     };
-  }, [tabSwitchCount, userId, roomId]);
+  }, [tabSwitchCount, userId, roomId, navigate]);
 
   useEffect(() => {
     if (showWarning) {
