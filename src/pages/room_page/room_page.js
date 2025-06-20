@@ -1,13 +1,18 @@
-import { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import VideoPlayer from '../../components/video_player/video_player';
-import { FaSlideshare, FaPhoneSlash, FaMicrophoneSlash, FaMicrophone, FaEllipsisV } from 'react-icons/fa';
-import styles from './room_page.module.css';
-import VideoNavbar from '../../components/video_navbar/video_navbar';
-import { useWebRTCContext } from '../../utils/webRTC_context';
+import { useEffect, useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import VideoPlayer from "../../components/video_player/video_player";
+import {
+  FaSlideshare,
+  FaPhoneSlash,
+  FaMicrophoneSlash,
+  FaMicrophone,
+  FaEllipsisV,
+} from "react-icons/fa";
+import styles from "./room_page.module.css";
+import VideoNavbar from "../../components/video_navbar/video_navbar";
+import { useWebRTCContext } from "../../utils/webRTC_context";
 
 export default function RoomPage() {
-
   const { roomId } = useParams();
   const navigate = useNavigate();
 
@@ -21,9 +26,14 @@ export default function RoomPage() {
     disconnectCall,
     isScreenSharing,
     isRemoteConnected,
-    joinRoom
+    joinRoom,
   } = useWebRTCContext();
 
+  useEffect(() => {
+    return () => {
+      sessionStorage.removeItem("isCreator");
+    };
+  }, []);
 
   useEffect(() => {
     joinRoom(roomId); // Only call once
@@ -47,7 +57,6 @@ export default function RoomPage() {
 
   return (
     <section className={styles.roomPage}>
-
       <VideoNavbar roomId={roomId} />
 
       <div className={styles.container}>
@@ -65,7 +74,7 @@ export default function RoomPage() {
           <button
             onClick={toggleAudio}
             style={{
-              backgroundColor: muted ? 'gray' : 'rgba(33, 149, 243, 0.77)',
+              backgroundColor: muted ? "gray" : "rgba(33, 149, 243, 0.77)",
             }}
             className={`${styles.controlButton} ${styles.audioButton}`}
           >
@@ -76,7 +85,9 @@ export default function RoomPage() {
             onClick={shareScreen}
             className={`${styles.controlButton} ${styles.screenShareButton}`}
             style={{
-              backgroundColor: isScreenSharing ? '#22c55e' : 'rgba(33, 149, 243, 0.77)', // green when active
+              backgroundColor: isScreenSharing
+                ? "#22c55e"
+                : "rgba(33, 149, 243, 0.77)", // green when active
             }}
           >
             <FaSlideshare />
@@ -85,7 +96,7 @@ export default function RoomPage() {
           <button
             onClick={() => {
               disconnectCall();
-              navigate('/');
+              navigate("/");
             }}
             className={`${styles.controlButton} ${styles.endCallButton}`}
           >
@@ -101,10 +112,16 @@ export default function RoomPage() {
 
           {menuOpen && (
             <div className={styles.dropdownMenu}>
-              <div onClick={() => handleMenuOption(`/code-editor/${roomId}`)} className={styles.menuItem}>
+              <div
+                onClick={() => handleMenuOption(`/code-editor/${roomId}`)}
+                className={styles.menuItem}
+              >
                 <span className={styles.icon}>{`{}`}</span> Code Editor
               </div>
-              <div onClick={() => handleMenuOption("")} className={styles.menuItem}>
+              <div
+                onClick={() => handleMenuOption("")}
+                className={styles.menuItem}
+              >
                 <span className={styles.icon}>💬</span> Chat
               </div>
             </div>

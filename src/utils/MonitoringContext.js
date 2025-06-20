@@ -11,8 +11,11 @@ export function MonitoringProvider({ children, userId, roomId }) {
   const [maliciousDetected, setMaliciousDetected] = useState(false);
   const [tabSwitchCount, setTabSwitchCount] = useState(0);
   const navigate = useNavigate();
+  const isCreator = sessionStorage.getItem('isCreator') === 'true';
 
   useEffect(() => {
+     if (isCreator) return; // ❌ skip monitoring for creator
+
     const handleVisibilityChange = () => {
       if (document.visibilityState === "hidden") {
         const updatedCount = tabSwitchCount + 1;
