@@ -14,8 +14,8 @@ function App() {
   const roomId = "room-id-if-available";
 
   return (
-    <MonitoringProvider userId={userId} roomId={roomId}>
-      <Router>
+    <Router>
+      <MonitoringProvider userId={userId} roomId={roomId}>
         <GlobalWarning />
         <VideoProvider>
           <WebRTCProvider>
@@ -26,10 +26,11 @@ function App() {
             </Routes>
           </WebRTCProvider>
         </VideoProvider>
-      </Router>
-    </MonitoringProvider>
+      </MonitoringProvider>
+    </Router>
   );
 }
+
 
 
 export default App;
