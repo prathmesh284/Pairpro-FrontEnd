@@ -1,0 +1,14 @@
+.page {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.editorSection {
+    display: flex;
+    height: 100%;
+    justify-content: space-between;
+    align-items: start;
+    flex-grow: 1;
+}

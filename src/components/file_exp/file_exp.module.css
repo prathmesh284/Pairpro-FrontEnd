@@ -1,4 +1,5 @@
 .files {
+  height: 100%;
   padding: 0.5rem 1rem;
   background-color: #1e1e1e;
   color: #d4d4d4;
@@ -43,4 +44,29 @@
   height: 1px;
   background-color: gray;
   margin: 0.5rem 0;
+}
+
+.fileBtn {
+  width: 100%;
+  margin-bottom: 5px;
+  padding: 6px 10px;
+  background-color: #444;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background 0.2s;
+}
+
+.fileBtn:hover {
+  background-color: #666;
+}
+
+.renameInput {
+  width: 90%;
+  padding: 5px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  font-size: 0.9rem;
 }

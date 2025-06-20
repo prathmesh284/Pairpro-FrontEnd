@@ -51,7 +51,7 @@ export default function EditorNavbar({ handleLanguage, language, runCode, code }
                         <FaArrowLeft />
                     </button>
                     <h2 className={styles.title}>Pairpro</h2>
-                    <select
+                    {/* <select
                         onChange={(e) => handleLanguage(e.target.value)}
                         value={language}
                         className={styles.select}
@@ -59,7 +59,7 @@ export default function EditorNavbar({ handleLanguage, language, runCode, code }
                         <option value="python">Python</option>
                         <option value="java">Java</option>
                         <option value="javascript">JavaScript</option>
-                    </select>
+                    </select> */}
                 </div>
 
                 <div style={{ display: 'flex', gap: '10px' }}>
