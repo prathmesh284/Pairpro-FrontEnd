@@ -1,6 +1,6 @@
 import { io } from "socket.io-client";
 
-const socket = io("https://pairpro-backend.onrender.com", {
+const socket = io("https://pairpro-backend-v0qk.onrender.com", {
   transports: ["websocket"],
   autoConnect: true, // Auto connect once globally
   reconnectionAttempts: 5,
