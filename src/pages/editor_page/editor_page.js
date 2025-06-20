@@ -13,7 +13,7 @@ import styles from "./editor_page.module.css";
 
 export default function EditorPage() {
   const { roomId } = useParams();
-  const [files, setFiles] = useState(["index.js", "server.js", "utils.js"]);
+  const [files, setFiles] = useState(["index.js"]);
   const [selectedFile, setSelectedFile] = useState(0);
   const editorRef = useRef(null);
   const [remoteCursors, setRemoteCursors] = useState({});
@@ -22,7 +22,7 @@ export default function EditorPage() {
   });
 
   const currentFile = files[selectedFile];
-  const [code,setCode] = useState(fileContents);
+  const [code, setCode] = useState(fileContents);
   const [outputPanel, setOutputPanel] = useState(false);
   const [language, setLanguage] = useState("javascript");
   const [output, setOutput] = useState("");
@@ -130,7 +130,7 @@ export default function EditorPage() {
 
   const renameFile = (index, newName) => {
     if (files.includes(newName)) {
-      alert("A file with that name already exists.");
+      alert("File already exists.");
       return;
     }
 
@@ -144,6 +144,16 @@ export default function EditorPage() {
 
     setFiles(newFiles);
     setFileContents(updatedContents);
+
+    const newLang = getLanguageFromExtension(newName);
+    setLanguage(newLang);
+
+    socket.emit("file-rename", {
+      roomId,
+      index,
+      oldName,
+      newName,
+    });
   };
 
   useEffect(() => {
@@ -243,6 +253,33 @@ export default function EditorPage() {
       socket.off("code-change", handleCodeChange);
     };
   }, []);
+
+  useEffect(() => {
+    const handleRename = ({ index, oldName, newName }) => {
+      console.log("[RECEIVED] file rename", oldName, "→", newName);
+
+      setFiles((prev) => {
+        const updated = [...prev];
+        updated[index] = newName;
+        return updated;
+      });
+
+      setFileContents((prev) => {
+        const updated = { ...prev };
+        updated[newName] = updated[oldName];
+        delete updated[oldName];
+        return updated;
+      });
+
+      // Update code and language if renamed file is currently open
+      if (files[selectedFile] === oldName) {
+        setLanguage(getLanguageFromExtension(newName));
+      }
+    };
+
+    socket.on("file-rename", handleRename);
+    return () => socket.off("file-rename", handleRename);
+  }, [files, selectedFile]);
 
   useEffect(() => {
     const handleCursor = (data) => {
