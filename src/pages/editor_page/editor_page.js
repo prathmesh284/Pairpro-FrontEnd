@@ -176,25 +176,23 @@ export default function EditorPage() {
   useEffect(() => {
     const file = files[selectedFile];
     if (!file) return;
-
-    // Update language
     const lang = getLanguageFromExtension(file);
     setLanguage(lang);
-
-    // Ensure fileContents has the file
     setFileContents((prev) => {
       if (!(file in prev)) {
         return { ...prev, [file]: "// Write code here..." };
       }
       return prev;
     });
-  }, [selectedFile, files]);
-
-  useEffect(() => {
-    const file = files[selectedFile];
-    if (!file) return;
+    // Set code from fileContents or fallback
     setCode(fileContents[file] || "// Write code here...");
-  }, [fileContents, files, selectedFile]);
+  }, [selectedFile, files, fileContents]);
+
+  // useEffect(() => {
+  //   const file = files[selectedFile];
+  //   if (!file) return;
+  //   setCode(fileContents[file] || "// Write code here...");
+  // }, [fileContents, files, selectedFile]);
 
   const handlePanelHeight = (height) => {
     console.log("handle panelHeight called ", height);
