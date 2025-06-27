@@ -14,6 +14,7 @@ import styles from "./editor_page.module.css";
 export default function EditorPage() {
   const { roomId } = useParams();
   const [files, setFiles] = useState(["index.js"]);
+  const [code, setCode] = useState(fileContents[files[selectedFile]]);
   const [selectedFile, setSelectedFile] = useState(0);
   const editorRef = useRef(null);
   const [remoteCursors, setRemoteCursors] = useState({});
@@ -22,7 +23,6 @@ export default function EditorPage() {
   });
 
   const currentFile = files[selectedFile];
-  const [code, setCode] = useState(fileContents);
   const [outputPanel, setOutputPanel] = useState(false);
   const [language, setLanguage] = useState("javascript");
   const [output, setOutput] = useState("");
@@ -156,43 +156,23 @@ export default function EditorPage() {
     });
   };
 
-  // useEffect(() => {
-  //   const file = files[selectedFile];
-  //   if (!file) return;
-
-  //   const lang = getLanguageFromExtension(file);
-  //   setLanguage(lang);
-
-  //   if (!fileContents[file]) {
-  //     setFileContents((prev) => ({
-  //       ...prev,
-  //       [file]: "// Write code here...",
-  //     }));
-  //   }
-
-  //   setCode(fileContents[file] || "// Write code here...");
-  // }, [selectedFile, files]);
-
   useEffect(() => {
     const file = files[selectedFile];
     if (!file) return;
+
     const lang = getLanguageFromExtension(file);
     setLanguage(lang);
-    setFileContents((prev) => {
-      if (!(file in prev)) {
-        return { ...prev, [file]: "// Write code here..." };
-      }
-      return prev;
-    });
-    // Set code from fileContents or fallback
-    setCode(fileContents[file] || "// Write code here...");
-  }, [selectedFile, files, fileContents]);
 
-  // useEffect(() => {
-  //   const file = files[selectedFile];
-  //   if (!file) return;
-  //   setCode(fileContents[file] || "// Write code here...");
-  // }, [fileContents, files, selectedFile]);
+    if (!(file in fileContents)) {
+      setFileContents((prev) => ({
+        ...prev,
+        [file]: "// Write code here...",
+      }));
+      setCode("// Write code here...");
+    } else {
+      setCode(fileContents[file]);
+    }
+  }, [selectedFile, files, fileContents]);
 
   const handlePanelHeight = (height) => {
     console.log("handle panelHeight called ", height);
